@@ -32,6 +32,7 @@ export default new Vuex.Store({
       state.todoList[id].done === true
         ? state.todoList[id].done = false
         : state.todoList[id].done = true
+      state.todoList.splice(0, 0)
     }
   },
   actions: {},
