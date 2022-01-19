@@ -1,49 +1,49 @@
 <template>
   <div>
     <div class="addTodoItem">
-      <ElButton type="primary" style="width: 100%; padding: 15px; font-size: 2em" @click="openModal" >添加Todo
+      <ElButton type="primary" class="addTodoItemBtn" @click="openModal">添加Todo
       </ElButton>
     </div>
     <div class="showTodoList">
       <ElTabs type="border-card" active-name="all" stretch>
         <ElTabPane label="全部" name="all">
           <div v-for="todoItem in todoList" :key="todoItem.id">
-            <ElCard shadow="hover" :body-style="{ textAlign: 'left', position: 'relative' }">
-              <ElCheckbox style="width: 100%; display: inline-block" :value="todoItem.done" @change="changeState(todoItem.id)">
-                <span
-                  :style="{ textDecoration: todoItem.done === true ? 'line-through' : 'none' }">{{
+            <ElCard shadow="hover" :body-style="elCardStyle">
+              <ElCheckbox class="todoItemCBox" :value="todoItem.done"
+                          @change="changeState(todoItem.id)">
+                <span :style="{ textDecoration: todoItem.done === true ? 'line-through' : 'none' }">{{
                     todoItem.desc
                   }}</span>
               </ElCheckbox>
-              <span style="position: absolute; right: 5%">{{ timestampFormat(todoItem.dateTime) }}</span>
+              <span class="todoItemDTime">{{ timestampFormat(todoItem.dateTime) }}</span>
               <span class="deadline">{{ formatTime(todoItem.deadline) }}</span>
             </ElCard>
           </div>
         </ElTabPane>
         <ElTabPane label="未完成" name="unchecked">
           <div v-for="todoItem in filterTodoList(false)" :key="todoItem.id">
-            <ElCard shadow="hover" :body-style="{ textAlign: 'left' ,position: 'relative' }">
-              <ElCheckbox style="width: 100%; display: inline-block" :value="todoItem.done" @change="changeState(todoItem.id)">
-                <span
-                  :style="{ textDecoration: todoItem.done === true ? 'line-through' : 'none' }">{{
+            <ElCard shadow="hover" :body-style="elCardStyle">
+              <ElCheckbox class="todoItemCBox" :value="todoItem.done"
+                          @change="changeState(todoItem.id)">
+                <span :style="{ textDecoration: todoItem.done === true ? 'line-through' : 'none' }">{{
                     todoItem.desc
                   }}</span>
               </ElCheckbox>
-              <span style="position: absolute; right: 5%">{{ timestampFormat(todoItem.dateTime) }}</span>
+              <span class="todoItemDTime">{{ timestampFormat(todoItem.dateTime) }}</span>
               <span class="deadline">{{ formatTime(todoItem.deadline) }}</span>
             </ElCard>
           </div>
         </ElTabPane>
         <ElTabPane label="已完成" name="checked">
           <div v-for="todoItem in filterTodoList(true)" :key="todoItem.id">
-            <ElCard shadow="hover" :body-style="{ textAlign: 'left', position: 'relative'  }">
-              <ElCheckbox style="width: 100%; display: inline-block" :value="todoItem.done" @change="changeState(todoItem.id)">
-                <span
-                  :style="{ textDecoration: todoItem.done === true ? 'line-through' : 'none' }">{{
+            <ElCard shadow="hover" :body-style="elCardStyle">
+              <ElCheckbox class="todoItemCBox" :value="todoItem.done"
+                          @change="changeState(todoItem.id)">
+                <span :style="{ textDecoration: todoItem.done === true ? 'line-through' : 'none' }">{{
                     todoItem.desc
                   }}</span>
               </ElCheckbox>
-              <span style="position: absolute; right: 5%">{{ timestampFormat(todoItem.dateTime) }}</span>
+              <span class="todoItemDTime">{{ timestampFormat(todoItem.dateTime) }}</span>
               <span class="deadline">{{ formatTime(todoItem.deadline) }}</span>
             </ElCard>
           </div>
@@ -83,6 +83,10 @@ export default {
   data () {
     return {
       modal: false,
+      elCardStyle: {
+        textAlign: 'left',
+        position: 'relative'
+      },
       todoItem: {}
     }
   },
@@ -146,11 +150,27 @@ export default {
 </script>
 
 <style scoped>
+.addTodoItemBtn {
+  width: 100%;
+  padding: 15px;
+  font-size: 2em;
+}
+
 .addTodoItem {
   margin-bottom: 5px;
 }
 
 .deadline {
   font-size: 15px;
+}
+
+.todoItemCBox {
+  width: 100%;
+  display: inline-block;
+}
+
+.todoItemDTime {
+  position: absolute;
+  right: 5%;
 }
 </style>
