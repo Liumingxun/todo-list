@@ -16,7 +16,7 @@ export default new Vuex.Store({
       {
         id: 1,
         done: true,
-        desc: 'This is a todo item!Cur cedrium peregrinationes?',
+        desc: 'This is a todo item! Ubi est ferox tata?',
         dateTime: 1642509547,
         deadline: new Date().getTime() + 20000
       }
@@ -24,6 +24,7 @@ export default new Vuex.Store({
   },
   mutations: {
     addTodoItem (state, todoItem) {
+      todoItem.id = state.todoList.at(-1).id + 1
       state.todoList.push(todoItem)
     },
     changeState (state, id) {

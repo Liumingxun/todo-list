@@ -1,42 +1,75 @@
 <template>
   <div>
     <div class="addTodoItem">
-      <ElButton type="primary" style="width: 100%; padding: 15px; font-size: 2em" @click="modal = true">添加Todo
+      <ElButton type="primary" style="width: 100%; padding: 15px; font-size: 2em" @click="openModal" >添加Todo
       </ElButton>
     </div>
     <div class="showTodoList">
       <ElTabs type="border-card" active-name="all" stretch>
         <ElTabPane label="全部" name="all">
           <div v-for="todoItem in todoList" :key="todoItem.id">
-            <ElCard shadow="hover" :body-style="{ textAlign: 'left' }">
-              <ElCheckbox style="width: 100%" :checked="todoItem.done" @change="changeState(todoItem.id)">
+            <ElCard shadow="hover" :body-style="{ textAlign: 'left', position: 'relative' }">
+              <ElCheckbox style="width: 100%; display: inline-block" :value="todoItem.done" @change="changeState(todoItem.id)">
                 <span
-                  :style="{ textDecoration: todoItem.done === true ? 'line-through' : 'none' }">{{ todoItem.desc }}</span>
+                  :style="{ textDecoration: todoItem.done === true ? 'line-through' : 'none' }">{{
+                    todoItem.desc
+                  }}</span>
               </ElCheckbox>
+              <span style="position: absolute; right: 5%">{{ timestampFormat(todoItem.dateTime) }}</span>
+              <span class="deadline">{{ formatTime(todoItem.deadline) }}</span>
             </ElCard>
           </div>
         </ElTabPane>
         <ElTabPane label="未完成" name="unchecked">
           <div v-for="todoItem in filterTodoList(false)" :key="todoItem.id">
-            <ElCard shadow="hover" :body-style="{ textAlign: 'left' }">
-              <ElCheckbox style="width: 100%" :checked="todoItem.done" @change="changeState(todoItem.id)">
+            <ElCard shadow="hover" :body-style="{ textAlign: 'left' ,position: 'relative' }">
+              <ElCheckbox style="width: 100%; display: inline-block" :value="todoItem.done" @change="changeState(todoItem.id)">
                 <span
-                  :style="{ textDecoration: todoItem.done === true ? 'line-through' : 'none' }">{{ todoItem.desc }}</span>
+                  :style="{ textDecoration: todoItem.done === true ? 'line-through' : 'none' }">{{
+                    todoItem.desc
+                  }}</span>
               </ElCheckbox>
+              <span style="position: absolute; right: 5%">{{ timestampFormat(todoItem.dateTime) }}</span>
+              <span class="deadline">{{ formatTime(todoItem.deadline) }}</span>
             </ElCard>
           </div>
         </ElTabPane>
         <ElTabPane label="已完成" name="checked">
           <div v-for="todoItem in filterTodoList(true)" :key="todoItem.id">
-            <ElCard shadow="hover" :body-style="{ textAlign: 'left' }">
-              <ElCheckbox style="width: 100%" :checked="todoItem.done" @change="changeState(todoItem.id)">
+            <ElCard shadow="hover" :body-style="{ textAlign: 'left', position: 'relative'  }">
+              <ElCheckbox style="width: 100%; display: inline-block" :value="todoItem.done" @change="changeState(todoItem.id)">
                 <span
-                  :style="{ textDecoration: todoItem.done === true ? 'line-through' : 'none' }">{{ todoItem.desc }}</span>
+                  :style="{ textDecoration: todoItem.done === true ? 'line-through' : 'none' }">{{
+                    todoItem.desc
+                  }}</span>
               </ElCheckbox>
+              <span style="position: absolute; right: 5%">{{ timestampFormat(todoItem.dateTime) }}</span>
+              <span class="deadline">{{ formatTime(todoItem.deadline) }}</span>
             </ElCard>
           </div>
         </ElTabPane>
       </ElTabs>
+    </div>
+    <div class="addTodoItemDialog">
+      <ElDialog :visible="modal" center width="25%" destroy-on-close>
+        <ElForm :model="todoItem" style="width: 80%">
+          <ElInput type="hidden" v-model="todoItem.id"/>
+          <ElFormItem label="描述" label-width="120px" style="width: 100%">
+            <el-input v-model="todoItem.desc" autocomplete="off"></el-input>
+          </ElFormItem>
+          <ElFormItem label="截止时间" label-width="120px" style="width: 100%;">
+            <ElDatePicker
+              v-model="todoItem.deadline"
+              type="datetime"
+              placeholder="选择日期时间">
+            </ElDatePicker>
+          </ElFormItem>
+        </ElForm>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="modal = false">取 消</el-button>
+          <el-button type="primary" @click="submitTodoItem">确 定</el-button>
+        </div>
+      </ElDialog>
     </div>
   </div>
 </template>
@@ -95,8 +128,18 @@ export default {
     filterTodoList (state) {
       return this.todoList.filter(item => item.done === state)
     },
-    addTodoItem () {
+    submitTodoItem () {
+      this.todoItem.dateTime = Math.trunc(new Date().getTime() / 1000)
+      this.todoItem.done = false
       this.$store.commit('addTodoItem', this.todoItem)
+      this.modal = false
+    },
+    openModal () {
+      this.todoItem = {}
+      this.modal = true
+    },
+    formatTime (timeNumber) {
+      return new Date(timeNumber).toLocaleString('zh-CN', { hour12: false })
     }
   }
 }
@@ -105,5 +148,9 @@ export default {
 <style scoped>
 .addTodoItem {
   margin-bottom: 5px;
+}
+
+.deadline {
+  font-size: 15px;
 }
 </style>
