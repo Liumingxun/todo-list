@@ -28,6 +28,7 @@ export default new Vuex.Store({
       state.todoList.push(todoItem)
     },
     changeState (state, id) {
+      console.log(state.todoList[id].done)
       state.todoList[id].done === true
         ? state.todoList[id].done = false
         : state.todoList[id].done = true
